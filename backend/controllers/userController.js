@@ -22,6 +22,7 @@ const authUser = asyncHandler(async (req, res) => {
 
 const registerUser = asyncHandler(async (req, res) => {
   const { name, email, password } = req.body;
+  const image = req.file ? req.file.filename : null;
 
   const userExists = await User.findOne({ email });
   if (userExists) {
@@ -33,6 +34,7 @@ const registerUser = asyncHandler(async (req, res) => {
     name,
     email,
     password,
+    image,
   });
 
   if (user) {
@@ -41,6 +43,7 @@ const registerUser = asyncHandler(async (req, res) => {
       _id: user._id,
       name: user.name,
       email: user.email,
+      image: user.image,
     });
   } else {
     res.status(400);
@@ -82,12 +85,17 @@ const updateUserProfile = asyncHandler(async (req, res) => {
       user.password = req.body.password;
     }
 
+    if (req.file) {
+      user.image = req.file.filename; // Update the image with the new filename
+    }
+
     const updatedUser = await user.save();
- 
+
     res.json({
       _id: updatedUser._id,
       name: updatedUser.name,
       email: updatedUser.email,
+      image: updatedUser.image,
     });
   } else {
     res.status(404);

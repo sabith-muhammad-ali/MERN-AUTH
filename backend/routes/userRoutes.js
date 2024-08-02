@@ -1,5 +1,7 @@
 import express from "express";
 const router = express.Router();
+import upload from "../middleware/upload.js";
+
 import {
   authUser,
   getUserProfile,
@@ -9,7 +11,7 @@ import {
 } from "../controllers/userController.js";
 import { protect } from "../middleware/authMiddleware.js";
 
-router.post("/", registerUser);
+router.post("/", upload.single("image"), registerUser);
 router.post("/auth", authUser);
 router.post("/logout", logoutUser);
 router

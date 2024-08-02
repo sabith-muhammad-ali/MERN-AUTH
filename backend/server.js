@@ -15,6 +15,8 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(cookieParser())
 
+app.use(express.static('public'));
+
 app.use("/api/users", userRoutes);
 
 app.get("/", (res, req) => res.send("Server is ready"));
