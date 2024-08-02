@@ -1,0 +1,24 @@
+.image-preview {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 2px solid #ddd;
+    display: block;
+    margin: 0 auto;
+  }
+  
+  .placeholder-preview {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    border: 2px dashed #ddd;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    color: #999;
+    font-size: 16px;
+    background-color: #f8f8f8;
+  }
+  

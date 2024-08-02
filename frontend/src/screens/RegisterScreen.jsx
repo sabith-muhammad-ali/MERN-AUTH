@@ -7,28 +7,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { useRegisterMutation } from "../slices/usersApiSlice";
 import { setCredentials } from "../slices/authSlice";
 import { toast } from "react-toastify";
-
-const uploadImage = async (file) => {
-  const formData = new FormData();
-  formData.append("image", file);
-
-  try {
-    const response = await fetch("/api/users", {
-      method: "POST",
-      body: formData,
-    });
-
-    const data = await response.json();
-    return data.filename; // Assuming the backend returns only the filename
-  } catch (error) {
-    console.error("Error uploading image:", error);
-    toast.error("Image upload failed");
-    return "";
-  }
-};
+import "../../style/RegisterScreen.css";
 
 const RegisterScreen = () => {
   const [image, setImage] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null); 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -46,6 +29,20 @@ const RegisterScreen = () => {
       navigate("/");
     }
   }, [navigate, userInfo]);
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    setImage(file);
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result); 
+      };
+      reader.readAsDataURL(file);
+    } else {
+      setImagePreview(null); 
+    }
+  };
 
   const submitHandler = async (e) => {
     e.preventDefault();
@@ -68,17 +65,29 @@ const RegisterScreen = () => {
       }
     }
   };
+
   return (
     <FormContainer>
       <h1 className="text-center mb-4">Sign Up</h1>
       <Form onSubmit={submitHandler}>
         <Form.Group className="my-2" controlId="imageUpload">
-          <Form.Label>Upload Image</Form.Label>
+          <Form.Label className="d-block text-center">
+            {imagePreview ? (
+              <img
+                src={imagePreview}
+                alt="Preview"
+                className="image-preview mb-3" 
+              />
+            ) : (
+              <div className="placeholder-preview mb-3">Upload Image</div>
+            )}
+          </Form.Label>
           <Form.Control
             type="file"
             accept="image/*"
-            onChange={(e) => setImage(e.target.files[0])}
-          ></Form.Control>
+            onChange={handleImageChange}
+            className="text-center"
+          />
         </Form.Group>
 
         <Form.Group className="my-2" controlId="name">
@@ -110,6 +119,7 @@ const RegisterScreen = () => {
             onChange={(e) => setPassword(e.target.value)}
           ></Form.Control>
         </Form.Group>
+
         <Form.Group className="my-2" controlId="confirmPassword">
           <Form.Label>Confirm Password</Form.Label>
           <Form.Control

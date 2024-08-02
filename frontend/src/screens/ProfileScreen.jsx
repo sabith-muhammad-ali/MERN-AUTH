@@ -6,8 +6,11 @@ import { toast } from "react-toastify";
 import Loader from "../components/Loader";
 import { useUpdateUserMutation } from "../slices/usersApiSlice";
 import { setCredentials } from "../slices/authSlice";
+import "../../style/RegisterScreen.css";
 
 const ProfileScreen = () => {
+  const [image, setImage] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
@@ -30,12 +33,14 @@ const ProfileScreen = () => {
       toast.error("Passwords do not match");
     } else {
       try {
-        const res = await updateProfile({
-          _id: userInfo._id,
-          name,
-          email,
-          password,
-        }).unwrap();
+        const formData = new FormData();
+        formData.append("name", name);
+        formData.append("email", email);
+        formData.append("password", password);
+        formData.append("image", image);
+        formData.append("password", password);
+        const res = await updateUser(formData).unwrap();
+        
         console.log(res);
         dispatch(setCredentials(res));
         toast.success("Profile updated successfully");
@@ -46,7 +51,7 @@ const ProfileScreen = () => {
   };
   return (
     <FormContainer>
-      <h1>Update Profile</h1>
+      <h1 className="text-center mb-4">Update Profile</h1>
 
       <Form onSubmit={submitHandler}>
         <Form.Group className="my-2" controlId="name">
@@ -87,9 +92,11 @@ const ProfileScreen = () => {
           ></Form.Control>
         </Form.Group>
 
-        <Button type="submit" variant="primary" className="mt-3">
-          Update
-        </Button>
+        <div className="mt-3 d-flex justify-content-center">
+          <Button type="submit" variant="primary" className="mt-3">
+            Update
+          </Button>
+        </div>
 
         {isLoading && <Loader />}
       </Form>
