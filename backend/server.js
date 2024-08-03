@@ -6,6 +6,7 @@ import { errorHandler, notFound } from "./middleware/errorMiddleware.js";
 import connectDB from "./config/db.js";
 const port = process.env.PORT || 5000;
 import userRoutes from "./routes/userRoutes.js";
+import adminRoutes from './routes/adminRoutes.js'
 
 connectDB();
 
@@ -18,6 +19,7 @@ app.use(cookieParser())
 app.use(express.static('public'));
 
 app.use("/api/users", userRoutes);
+app.use("/api/admin", adminRoutes);
 
 app.get("/", (res, req) => res.send("Server is ready"));
 app.use(notFound);

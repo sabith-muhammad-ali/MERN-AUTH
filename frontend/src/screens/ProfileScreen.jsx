@@ -10,7 +10,7 @@ import "../../style/RegisterScreen.css";
 
 const ProfileScreen = () => {
   const [image, setImage] = useState(null);
-  const [imagePreview, setImagePreview] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null); // State for image preview
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
@@ -18,15 +18,18 @@ const ProfileScreen = () => {
 
   const dispatch = useDispatch();
   const { userInfo } = useSelector((state) => state.auth);
+
   const [updateProfile, { isLoading }] = useUpdateUserMutation();
 
   useEffect(() => {
-    setName(userInfo.name);
-    setEmail(userInfo.email);
-    if (userInfo.image) {
-      setImagePreview(`/uploads/${userInfo.image}`);
+    if (userInfo) {
+      setName(userInfo.name);
+      setEmail(userInfo.email);
+      if (userInfo.image) {
+        setImagePreview(`/uploads/${userInfo.image}`); // Set initial image preview
+      }
     }
-  }, [userInfo.email, userInfo.name, userInfo.image]);
+  }, [userInfo]);
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -34,26 +37,12 @@ const ProfileScreen = () => {
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setImagePreview(reader.result);
+        setImagePreview(reader.result); // Update image preview on file selection
       };
       reader.readAsDataURL(file);
     } else {
       setImagePreview(null);
     }
-  };
-
-  // Function to upload the image to the server
-  const uploadImage = async (image) => {
-    const formData = new FormData();
-    formData.append("image", image);
-
-    const response = await fetch("/api/upload", {
-      method: "POST",
-      body: formData,
-    });
-
-    const data = await response.json();
-    return data.filename; // Assuming the server returns the uploaded filename
   };
 
   const submitHandler = async (e) => {
@@ -62,7 +51,7 @@ const ProfileScreen = () => {
       toast.error("Passwords do not match");
     } else {
       try {
-        const formData = new FormData();
+        let formData = new FormData();
         formData.append("name", name);
         formData.append("email", email);
         formData.append("password", password);
@@ -71,7 +60,6 @@ const ProfileScreen = () => {
         }
 
         const res = await updateProfile(formData).unwrap();
-        console.log(res);
         dispatch(setCredentials(res));
         toast.success("Profile updated successfully");
       } catch (err) {
