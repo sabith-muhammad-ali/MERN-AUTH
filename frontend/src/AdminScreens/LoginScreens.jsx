@@ -4,7 +4,7 @@ import { Form, Button } from "react-bootstrap";
 import FormContainer from "../components/FormContainer";
 import { useDispatch, useSelector } from "react-redux";
 import { useAdminLoginMutation } from "../slices/adminApiSlice";
-import { setCredentials } from "../slices/authSlice"; 
+import { setCredentials } from "../slices/authSlice";
 import { toast } from "react-toastify";
 import Loader from "../components/Loader";
 
