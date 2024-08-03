@@ -4,7 +4,6 @@ import User from "../models/userModel.js";
 
 const authAdmin = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
-
   const admin = await User.findOne({ email });
 
   if (admin) {
@@ -31,4 +30,17 @@ const authAdmin = asyncHandler(async (req, res) => {
   }
 });
 
-export { authAdmin };
+const logoutAdmin = asyncHandler(async (req, res) => {
+  res.cookie("jwt", "", {
+    httpOnly: true,
+    expires: new Date(0),
+  });
+  res.status(200).json({ message: "Admin logged out" });
+});
+
+const getUser = asyncHandler(async (req, res) => {
+  const users = await User.find({});
+  res.json(users);
+});
+
+export { authAdmin, logoutAdmin, getUser };

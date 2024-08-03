@@ -21,7 +21,7 @@ const LoginScreen = () => {
 
   useEffect(() => {
     if (userInfo) {
-      navigate("/");
+      navigate("/dashboard");
     }
   }, [navigate, userInfo]);
 
@@ -31,7 +31,7 @@ const LoginScreen = () => {
       const res = await login({ email, password }).unwrap();
       console.log("Login response:", res);
       dispatch(setCredentials({ ...res }));
-      navigate("/");
+      navigate("/dashboard");
     } catch (err) {
       console.error("Login error:", err);
       if (err?.data?.message === "Access denied: Not an admin") {
