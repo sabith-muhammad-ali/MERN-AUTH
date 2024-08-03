@@ -70,7 +70,7 @@ const ProfileScreen = () => {
 
   return (
     <FormContainer>
-      <h1>Update Profile</h1>
+      <h1 className="text-center mb-4" >Update Profile</h1>
       <Form onSubmit={submitHandler}>
         <Form.Group className="my-2" controlId="imageUpload">
           <Form.Label className="d-block text-center">

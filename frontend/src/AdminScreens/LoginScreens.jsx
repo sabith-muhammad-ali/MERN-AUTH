@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Form, Button, Row, Col } from "react-bootstrap";
+import { Form, Button } from "react-bootstrap";
 import FormContainer from "../components/FormContainer";
 import { useDispatch, useSelector } from "react-redux";
-import { useLoginMutation } from "../slices/usersApiSlice";
-import { setCredentials } from "../slices/authSlice";
+import { useAdminLoginMutation } from "../slices/adminApiSlice";
+import { setCredentials } from "../slices/authSlice"; 
 import { toast } from "react-toastify";
 import Loader from "../components/Loader";
 
@@ -14,8 +14,8 @@ const LoginScreen = () => {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
-  const [login, { isLoading }] = useLoginMutation();
+  console.log("useAdminLoginMutation", useAdminLoginMutation);
+  const [login, { isLoading }] = useAdminLoginMutation();
 
   const { userInfo } = useSelector((state) => state.auth);
 
@@ -29,17 +29,22 @@ const LoginScreen = () => {
     e.preventDefault();
     try {
       const res = await login({ email, password }).unwrap();
+      console.log("Login response:", res);
       dispatch(setCredentials({ ...res }));
       navigate("/");
     } catch (err) {
-      toast.error(err?.data?.message || err.error);
+      console.error("Login error:", err);
+      if (err?.data?.message === "Access denied: Not an admin") {
+        toast.error("You are not authorized to access this page.");
+      } else {
+        toast.error(err?.data?.message || err.error || "An error occurred");
+      }
     }
   };
 
   return (
     <FormContainer>
       <h1 className="text-center mb-4">Admin Sign In</h1>
-
       <Form onSubmit={submitHandler}>
         <Form.Group className="my-2" controlId="email">
           <Form.Label>Email Address</Form.Label>
@@ -48,7 +53,7 @@ const LoginScreen = () => {
             placeholder="Enter email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-          ></Form.Control>
+          />
         </Form.Group>
 
         <Form.Group className="my-2" controlId="password">
@@ -58,10 +63,10 @@ const LoginScreen = () => {
             placeholder="Enter password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-          ></Form.Control>
+          />
         </Form.Group>
 
-        <div className=" d-flex justify-content-center">
+        <div className="d-flex justify-content-center">
           <Button
             disabled={isLoading}
             type="submit"
@@ -72,7 +77,6 @@ const LoginScreen = () => {
           </Button>
         </div>
       </Form>
-
       {isLoading && <Loader />}
     </FormContainer>
   );
