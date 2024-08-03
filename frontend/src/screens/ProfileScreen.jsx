@@ -17,15 +17,44 @@ const ProfileScreen = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
 
   const dispatch = useDispatch();
-
   const { userInfo } = useSelector((state) => state.auth);
-
   const [updateProfile, { isLoading }] = useUpdateUserMutation();
 
   useEffect(() => {
     setName(userInfo.name);
     setEmail(userInfo.email);
-  }, [userInfo.email, userInfo.name]);
+    if (userInfo.image) {
+      setImagePreview(`/uploads/${userInfo.image}`);
+    }
+  }, [userInfo.email, userInfo.name, userInfo.image]);
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    setImage(file);
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      setImagePreview(null);
+    }
+  };
+
+  // Function to upload the image to the server
+  const uploadImage = async (image) => {
+    const formData = new FormData();
+    formData.append("image", image);
+
+    const response = await fetch("/api/upload", {
+      method: "POST",
+      body: formData,
+    });
+
+    const data = await response.json();
+    return data.filename; // Assuming the server returns the uploaded filename
+  };
 
   const submitHandler = async (e) => {
     e.preventDefault();
@@ -37,10 +66,11 @@ const ProfileScreen = () => {
         formData.append("name", name);
         formData.append("email", email);
         formData.append("password", password);
-        formData.append("image", image);
-        formData.append("password", password);
-        const res = await updateUser(formData).unwrap();
-        
+        if (image) {
+          formData.append("image", image);
+        }
+
+        const res = await updateProfile(formData).unwrap();
         console.log(res);
         dispatch(setCredentials(res));
         toast.success("Profile updated successfully");
@@ -49,11 +79,30 @@ const ProfileScreen = () => {
       }
     }
   };
+
   return (
     <FormContainer>
-      <h1 className="text-center mb-4">Update Profile</h1>
-
+      <h1>Update Profile</h1>
       <Form onSubmit={submitHandler}>
+        <Form.Group className="my-2" controlId="imageUpload">
+          <Form.Label className="d-block text-center">
+            {imagePreview ? (
+              <img
+                src={imagePreview}
+                alt="Preview"
+                className="image-preview mb-3"
+              />
+            ) : (
+              <div className="placeholder-preview mb-3">Upload Image</div>
+            )}
+          </Form.Label>
+          <Form.Control
+            type="file"
+            accept="image/*"
+            onChange={handleImageChange}
+            className="text-center"
+          />
+        </Form.Group>
         <Form.Group className="my-2" controlId="name">
           <Form.Label>Name</Form.Label>
           <Form.Control
@@ -81,7 +130,6 @@ const ProfileScreen = () => {
             onChange={(e) => setPassword(e.target.value)}
           ></Form.Control>
         </Form.Group>
-
         <Form.Group className="my-2" controlId="confirmPassword">
           <Form.Label>Confirm Password</Form.Label>
           <Form.Control

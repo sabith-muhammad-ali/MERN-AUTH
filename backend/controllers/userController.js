@@ -86,7 +86,7 @@ const updateUserProfile = asyncHandler(async (req, res) => {
     }
 
     if (req.file) {
-      user.image = req.file.filename; // Update the image with the new filename
+      user.image = req.file.filename;
     }
 
     const updatedUser = await user.save();
