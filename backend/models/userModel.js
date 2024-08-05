@@ -20,6 +20,10 @@ const userSchema = mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    isBlock: {
+      type: Boolean,
+      default: false,
+    },
     image: {
       type: String,
       default: null,

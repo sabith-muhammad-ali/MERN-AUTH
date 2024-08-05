@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import {
   useGetUsersQuery,
   useDeleteUserMutation,
+  useBlockUserMutation,
 } from "../slices/adminApiSlice";
 import { useNavigate } from "react-router-dom";
 import Loader from "../components/Loader";
@@ -16,10 +17,21 @@ const AdminDashboard = () => {
     refetch,
   } = useGetUsersQuery();
   const [deleteUser, { isLoading }] = useDeleteUserMutation();
+  const [blockUser, { isLoading: isBlocking }] = useBlockUserMutation();
   const [loading, setLoading] = useState(false);
 
-  const handleBlock = (userId) => {
+  const handleBlock = async (userId) => {
     console.log("Block user with ID:", userId);
+    try {
+      setLoading(true);
+      await blockUser(userId).unwrap();
+      console.log("User block status updated");
+      refetch();
+    } catch (err) {
+      console.error("Failed to update block status: ", err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleDelete = async (userId) => {
@@ -71,9 +83,11 @@ const AdminDashboard = () => {
               <td>
                 <button
                   onClick={() => handleBlock(user._id)}
-                  className="action-button block-button"
+                  className={`action-button ${
+                    user.isBlock ? "unblock-button" : "block-button"
+                  }`}
                 >
-                  Block
+                  {user.isBlock ? "Unblock" : "Block"}
                 </button>
                 <button
                   onClick={() => handleEdit(user._id)}

@@ -56,5 +56,16 @@ const deleteUser = asyncHandler(async (req, res) => {
   }
 });
 
+const blockUser = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.params.id);
 
-export { authAdmin, logoutAdmin, getUser, deleteUser, };
+  if (user) {
+    user.isBlock = !user.isBlock;
+    await user.save();
+    res.json({ message: `user ${user.isBlock ? "blocked" : "unblocked"}` });
+  } else {
+    res.status(404);
+    throw new Error("user not found");
+  }
+});
+export { authAdmin, logoutAdmin, getUser, deleteUser, blockUser };

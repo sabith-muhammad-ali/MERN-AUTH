@@ -51,16 +51,18 @@ h1 {
     margin-right: 5px;
 }
 
-/* Specific button styles */
 .block-button {
-    background-color: #ff5c5c;
-    /* Light red */
-}
-
-.block-button:hover {
-    background-color: #ff1a1a;
-    /* Darker red on hover */
-}
+    background-color: #f0ad4e; /* Yellow color */
+  }
+  
+  .unblock-button {
+    background-color: #d9534f; /* Red color */
+  }
+  
+  .block-button:hover,
+  .unblock-button:hover {
+    opacity: 0.8;
+  }
 
 .delete-button {
     background-color: #ff6666;

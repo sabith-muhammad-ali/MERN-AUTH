@@ -24,6 +24,12 @@ export const adminApiSlice = apiSlice.injectEndpoints({
         method: "DELETE",
       }),
     }),
+    blockUser: builder.mutation({
+      query: (userId) => ({
+        url: `/admin/dashboard/${userId}/block`,
+        method: "PATCH",
+      }),
+    }),
   }),
   overrideExisting: false,
 });
@@ -32,4 +38,5 @@ export const {
   useAdminLoginMutation,
   useGetUsersQuery,
   useDeleteUserMutation,
+  useBlockUserMutation,
 } = adminApiSlice;
