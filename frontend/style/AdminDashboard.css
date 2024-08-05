@@ -51,20 +51,34 @@ h1 {
     margin-right: 5px;
 }
 
+/* Specific button styles */
 .block-button {
-    background-color: #ffcc00;
-    /* Yellow for block */
-}
-
-.delete-button {
-    background-color: #ff4444;
-    /* Red for delete */
+    background-color: #ff5c5c;
+    /* Light red */
 }
 
 .block-button:hover {
-    background-color: #e6b800;
+    background-color: #ff1a1a;
+    /* Darker red on hover */
+}
+
+.delete-button {
+    background-color: #ff6666;
+    /* Light red-orange */
 }
 
 .delete-button:hover {
-    background-color: #cc0000;
+    background-color: #ff3333;
+    /* Darker red-orange on hover */
+}
+
+/* New edit button styles */
+.edit-button {
+    background-color: #4caf50;
+    /* Green */
+}
+
+.edit-button:hover {
+    background-color: #388e3c;
+    /* Darker green on hover */
 }

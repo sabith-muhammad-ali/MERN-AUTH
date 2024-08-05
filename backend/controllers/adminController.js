@@ -39,8 +39,22 @@ const logoutAdmin = asyncHandler(async (req, res) => {
 });
 
 const getUser = asyncHandler(async (req, res) => {
-  const users = await User.find({});
+  const users = await User.find({ isAdmin: false });
   res.json(users);
 });
 
-export { authAdmin, logoutAdmin, getUser };
+const deleteUser = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.params.id);
+  console.log("users", user);
+
+  if (user) {
+    await user.deleteOne();
+    res.json({ message: "User removed" });
+  } else {
+    res.status(404);
+    throw new Error("User not found");
+  }
+});
+
+
+export { authAdmin, logoutAdmin, getUser, deleteUser, };

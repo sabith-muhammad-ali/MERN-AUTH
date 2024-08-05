@@ -18,8 +18,18 @@ export const adminApiSlice = apiSlice.injectEndpoints({
     getUsers: builder.query({
       query: () => "/admin/dashboard",
     }),
+    deleteUser: builder.mutation({
+      query: (userId) => ({
+        url: `/admin/dashboard/${userId}`,
+        method: "DELETE",
+      }),
+    }),
   }),
   overrideExisting: false,
 });
 
-export const { useAdminLoginMutation, useGetUsersQuery } = adminApiSlice;
+export const {
+  useAdminLoginMutation,
+  useGetUsersQuery,
+  useDeleteUserMutation,
+} = adminApiSlice;

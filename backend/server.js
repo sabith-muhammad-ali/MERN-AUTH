@@ -18,7 +18,7 @@ app.use(cookieParser());
 
 app.use(express.static("public"));
 
-app.use("/api/users", userRoutes);
+app.use('/api/users', userRoutes);
 app.use("/api/admin", adminRoutes);
 
 app.get("/", (res, req) => res.send("Server is ready"));
